@@ -12,15 +12,23 @@
  //--- Ouverture de la base de données
  mysqli_select_db ( $DataBase, "dylan-cahu_bibliotheque" ) ;
 
- //--- Préparation de la requête
- $Requete = "select * from $info" ;
+ $sql = "select * from $info" ;
+
+ //on prépare la requête
+$stmt = mysqli_prepare($DataBase, $sql);
  
- //--- Exécution de la requête (fin du script possible sur erreur ...)
- $Resultat = mysqli_query ( $DataBase, $Requete )  or  die(mysqli_error($DataBase) ) ;
+//on relie la variable id
+mysqli_stmt_bind_param($stmt, "i", $id);
 
-echo 'Il y a' . mysqli_num_rows($Resultat) .  'entrée(s) dans la base de données <br>';
+//on définit les variables qui vont être recup
+mysqli_stmt_execute($stmt, $id, $label);
+ 
+//on récupère le résultat
+mysqli_stmt_fetch($stmt);
 
- while (  $donnees = mysqli_fetch_array($Resultat)  )
+echo 'Il y a' . mysqli_num_rows($stmt) .  'entrée(s) dans la base de données <br>';
+
+ while (  $donnees = mysqli_fetch_array($stmt)  )
  {
 	 echo $donnees['id'] . ' ' .$donnees['libelle'] . '</br>' ;
  }
